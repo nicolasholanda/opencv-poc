@@ -1,6 +1,9 @@
 import cv2
 import os
 from dotenv import load_dotenv
+from ultralytics import YOLO
+
+model = YOLO('yolov8n.pt')  # "n" = nano
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,7 +24,10 @@ while True:
         print("Fail to receive frame.")
         break
 
-    cv2.imshow('DVR Stream', frame)
+    results = model(frame)
+    annotated_frame = results[0].plot()
+
+    cv2.imshow('DVR Stream', annotated_frame)
 
     # Press 'q' to quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
